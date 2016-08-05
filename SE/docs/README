@@ -1,0 +1,17 @@
+useepp.tex 	contains the chapter include file. 
+useepp-chapter.tex  the wrapper that allows you to compile the chapter include
+		   file locally into this directory.
+
+The nugrid.sty is slightly different here compared to the one in the
+top level docs directory. If you have references get the ngastro bib
+file from the docs directory and commit back to there.
+
+Use 'runlatex' to compile. The chapter header has a different form if compiler into the book in docs or into the standalone se-chapter wrapper here:
+
+% \chapter{\ndoctitle}   % uncomment this if compiled into book in docs directory
+\ngtitle{\ndoctitle}     % uncomment this is compiled into chapter wrapper this directory
+
+Make sure you uncomment the right line.
+
+
+

@@ -1,0 +1,418 @@
+% *********** Document name and reference:
+% Title of document
+\renewcommand{\ndoctitle}{USEEPP: The Unified Stellar Evolution and Explosion Post-Processing library} 
+% Document category acronym 
+\renewcommand{\ndocname}{useepp}                      
+% svn dir
+\renewcommand{\svndir}{svn://forum.astro.keele.ac.uk/frames/utils/se/docs}  
+% Contributers to this document
+\renewcommand{\ndoccontribs}{GR,SD}
+
+\input{chap}
+
+Document name: \ndocname \\
+SVN directory: \svndir\\
+Contributors: \ndoccontribs\\
+
+{ \textbf{Abstract:} \slshape USEEPP \index{USEEPP} is the I/O library
+that the NuGrid project uses as the interface between the simulation
+of the thermodynamic and hydrodynamic conditions in the nuclear
+production site (or, in other words the output of stellar evolution or
+stellar explosion simulations that serve as the input for the
+post-processing) and the PPN code that does the nucleosynthesis
+post-processing. USEEPP will will eventually also be used to write out
+PPN data and which can then be feed into a not-yet existing
+visualisation framework.}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Introduction and Context}
+
+%Here comes standard latex as you know it .... for example a reference
+%to \citet{herwig:99a}. The bibtex references are kept in ngastro.bib.
+% \fig{fig:HRD1} shows that for similar overshoot ...
+
+The NuGrid framework builds on two main tools, the SEE (Stellar Evolution and Explosion) database and the PPN (Post-Processing Network) codes. The SEE database contains the tracks of the Stellar Evolution and Explosion data. The PPN code performs nucleosynthesis post-processing on the data in the SEE library. We have introduced a new standard format to efficiently and accurately save stellar evolution data, the Unified Stellar Evolution and Explosion Post-Processing format, or short USEEPP.
+USEEPP builds on a package (the SE library) written by Steven Diehl and Gabriel Rockefeller at LANL and writes compressed hdf5 files\footnote{\url{http://www.hdfgroup.org/HDF5/}}. This is the main library to read and write commands for both Fortran and C that is used to write and read the data in the SEE database. If you want to provide data for the SEE database so that it can be post-processed by
+PPN you need to include USEEPP write statements into your code, or use a conversion tool. For simplicity, we will make no distinction between the USEEPP standard and the SE library in the following discussion, and simply refer to the USEEPP library instead.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Basics of the USEEPP Standard}\label{sec:basics}
+
+The USEEPP standard file format is based on a wrapper library for the generic and very powerful hdf5 format. However, most of the low-level, complicated I/O layers of hdf5 are stripped away and hidden inside the USEEPP library. Thus, saving your data becomes very fast, efficient and easy to implement with very little programming burden on the user. 
+
+Let us assume that you want to save $N$ separate data sets in an efficient way. In this context, a ``data set'' can be a time step or cycle in your stellar evolution, or a full data set of a particle-based simulation. We will refer generically to cycles or data sets in this document from now on. So let us consider the basic layout of these hdf5 files for a better understanding of the processes evolved.
+
+\begin{verbatim}
+/ (root)
+        |-global attribute1 (header information)
+        |-global attribute2 (header information)
+/cycle-1 (group)
+        |-SE_DATASET (data set)
+        |-attribute1 (information specific to cycle-1)
+        |-attribute2 (information specific to cycle-1)
+        |-attribute3 (information specific to cycle-1)
+/cycle-2 (data set)
+        |-SE_DATASET (data set)
+        |-attribut3 (information specific to cycle-2)
+/cycle-3
+        |-SE_DATASET (data set)
+[...]
+/cycle-N
+        |-SE_DATASET (data set)
+        |-attribute2 (information specific to cycle-N)
+        |-attribute3 (information specific to cycle-N)
+\end{verbatim}
+
+As shown above, there is a {\it root level} that contains sub-levels (so-called ``groups'') for each cycle or time step and additional global information, similar to a normal directory. This root level contains the global header information about the the whole file, which is saved in so-called {\it global attributes}. These attributes are variables that are needed for all data sets in the file, such as units for example.
+
+The root also contains groups for each cycle, of which one can think as subdirectories. These contain the actual data sets, analogous to files in a directory. The groups are called \verb!cycle-***! and contain data sets tagged as \verb!SE_DATASET!, which can hold integer, float and double values, each of which can be scalar, 1D or 2D arrays. We will explain the data set layout with some examples in the following section. Optionally, one can also attach additional information to each cycle, such as the total mass contained in the data set for example. This additional information is saved in so-called ``attributes'' to the data sets. Note that the library is rather flexible, allowing different (or no) sets of attributes to be attached to each cycle. With the newest version of the USEEPP library, it is now also possible to attach attributes to cycles for which the data set has not yet been written. 
+
+There is neither a limit on the number of attributes, nor is there a limit for the amount of data sets a file can contain in principle, though other file-system related problems may arise if the file size exceeds a certain limit. We have used this format to produce files with several GB without problems.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{The Fortran Interface for USEEPP}
+\label{sec:evol}
+
+\subsection{Opening and Closing Files}
+
+First we have to open the file, which we will call \texttt{test.h5}:
+%
+\begin{verbatim}
+      call FSE_OPEN("test.h5",FID1)
+\end{verbatim}
+%
+This will open the file \verb test.h5 in case it already exists, or create the file if it does not. The file ID will be returned and saved in \texttt{FID1}. When you are done with everything, you will be able to close the file again with the following call:
+%
+\begin{verbatim}
+      call FSE_CLOSE(FID1)
+\end{verbatim}
+%
+Note that you can have as many hdf5 files open at any given time, but that files should always be closed at the end of the usage to free resources. Files can also be reopened and things appended to them at any point in time.
+
+
+\subsection{Writing Global Attributes}
+
+Let us now consider a practical example for directly writing USEEPP data from your stellar evolution code. The goal is to first write a header section and later a large number (for example 5000 to 10000) cycles with the full profiles (all mesh zones) for the required quantities (like mass coordinate, T, etc). 
+
+A good example on how the USEEPP library is used with Fortran can be found in
+\texttt{fsewrite.f}\footnote{in svn://forum.astro.keele.ac.uk/utils/se/trunk/tests}. Also, there is some more primary documentation on the way from the developers of the USEEPP library.
+
+All the examples below are taken from the hpf2se.f tool on svn\footnote{in
+svn://forum.astro.keele.ac.uk/utils/hpf2se}. One can further abstract the USEEPP library calls into one Fortran subroutine call. Here is that call for writing the header. You only do that once for each USEEPP file. Let's start with the header section which contains general information about the data and the track contained in the file. This is how some example data for strings, float, double and integer would look like:
+\begin{verbatim}
+      my_stringvar = "teststring"
+      my_floatvar  = 2.
+      my_doublevar = 1.9891d33
+      my_intvar    = 1
+      do i = 1,  10
+	      my_intarrayvar(i) = i 
+      end do 	
+\end{verbatim}
+
+Here are some examples for how to write this data as a global attribute to the file header. The \verb!FSE_WRITE_*ATTR! calls can write string, float, double, or integer values, simply replace \verb!*! with \verb!S!, \verb!F!, \verb!D!, or \verb!I!, respectively. The calls are all of the form 
+\begin{verbatim}
+      call FSE_WRITE_*ATTR(file_id, model_number, "variable_name_in_file", value)
+\end{verbatim}
+The \verb!file_id!  is returned by \verb!FSE_OPEN! (see above), the model number either specifies the data set number, or is set to \verb -1 for writing a global attribute. Here are some examples for writing string, float, double and integer global variables (scalar):
+
+\begin{verbatim}
+      call FSE_OPEN("test.h5",FID1)
+      call FSE_WRITE_SATTR(FID1, -1, "codev", my_stringvar)
+      call FSE_WRITE_FATTR(FID1, -1, "mini", my_floatvar)
+      call FSE_WRITE_DATTR(FID1, -1, "mass_unit", my_doublevar)
+      call FSE_WRITE_IATTR(FID1, -1, "se_output", my_intvar)
+      call FSE_WRITE_IARRAYATTR(FID1, -1, "isotopes", my_intarrayvar, 10)
+      call FSE_CLOSE(FID1)
+\end{verbatim}
+
+Note that the last call writes an array attribute\footnote{For savvy hdf5 users, this is only called an attribute for consistency with scalar attributes inside SE. hdf5 does not support vector attributes, so this is in fact implemented a data set inside hdf5.} and requires the size of the vector (10) as an additional argument.
+
+To make the appearance of your code more clean, you may consider summarizing the  writing of the header section into one subroutine wrapper call, which then in turn calls the USEEPP library. 
+
+
+\subsection{Writing Data Sets and their Attributes}
+
+In USEEPP, we only write complete data sets for one cycle, for reasons of simplicity, speed and compressibility. This is done with the \verb!FSE_WRITE! call, which is very powerful and flexible at the same time. It has a variable argument list that enables it to save different types of 1D and 2D arrays at the same time. The generic call looks as follows: 
+
+\begin{verbatim}
+      call FSE_WRITE(file_id, model_number, array_length, number_of_arrays,
+     &               variable, "variable_name", SE_TYPE,
+     &               [...] )
+\end{verbatim}
+
+This call would save a data set containing one array called \verb!variable! of length \verb!array_length! into the file identified with \verb!file_id! . 
+
+For two-dimensional arrays, one has to supply two additional variables, the leng
+
+Here is an example from \verb!fsewrite.f!  that shows some library elements:
+\begin{verbatim}
+      call FSE_OPEN("test.h5",FID1)
+      narray = 10
+      call FSE_WRITE(FID1, CYCLE, M, narray,
+     1        MASS, "mass", SE_DOUBLE,
+     2        R, "radius", SE_FLOAT,
+     3        INDEX, "index", SE_INT,
+     4        YPS, "yps", SE_DOUBLE_2D, MSL, NSP,
+     5        FLTARR, "fltarr", SE_FLOAT_2D, MSL, FNSP,
+     6        INTARR, "intarr", SE_INT_2D, MSL, INSP)
+      call FSE_CLOSE(FID1)
+\end{verbatim}
+
+You can see that there are two types of \verb!FSE_WRITE! commands:
+the first writes the actual profiles of quantities that we will
+actually use for the post-processing. narray arrays of length \verb!M!, each
+of which can have a different type, as well as RANK 1 or 2. in other
+words this allows you to write a collection of 1D and 2D arrays. Note that the order of arrays to be written can be arbitrary, you will not need to know the order to read the data back later on.
+
+For 2D arrays you have to specify how the leading (in fortran the first
+index counts the rows and the second counts the columns) index is
+dimensioned. Note that \verb!MSL! is not necessarily the same as \verb!M!, the number of elements you want to write, but rather the actual dimension of the array. This is necessary to correctly pass two-dimensional arrays between fortran and C, in which the USEEPP library is implemented. The \verb!NSP! variables is the second dimension of the arrays, specifying the number of abundances for each shell. 
+
+\begin{verbatim}
+      call FSE_OPEN("test.h5",FID1)
+      call FSE_WRITE_DATTR(FID1, CYCLE, "total_mass", MTOT)
+      call FSE_WRITE_FATTR(FID1, CYCLE, "maxradius", maxradius)
+      call FSE_WRITE_IATTR(FID1, CYCLE, "shellnb", mi)
+      call FSE_CLOSE(FID1)
+\end{verbatim}
+
+To write single number attributes for each data set, one quantity at at time, you can use the attribute functions again, with different calls for different data types. Note that you need to write the data set first, and only after that can you attach attributes, and that you now have to supply the cycle number (\verb!CYCLE!), instead of ``-1'' as we did for the global variables.
+
+Again, to make your main code more compact, you can implement a wrapper that takes care of writing all the data for one model (or cycle) into the hdf5 file. Check
+\verb!sewrite.f!\footnote{svn://forum.astro.keele.ac.uk/utils/hpf2se/subroutines} for an example.
+
+\subsection{Reading Data Sets}
+
+The read routines for the USEEPP library is done in several steps. Unlike the write routines, which write the data set as a whole, the read routines read one vector variable at a time, as shown below. Similar to the attribute data base, the type of data is indicated by one character in the function call, with \verb!D!, \verb!F!, and \verb!I! designate double, floating point, and integer data. 
+
+\begin{verbatim}
+      call FSE_OPEN("test.h5",FID1)
+      call FSE_READ_D(FID1, CYCLE, M, "mass", MASS)
+      call FSE_READ_F(FID1, CYCLE, M, "radius", R)
+      call FSE_READ_I(FID1, CYCLE, M, "index", INDEX)
+      call FSE_READ_D_2D(FID1, CYCLE, M, "yps", YPS, MSL, NSP)
+      call FSE_READ_F_2D(FID1, CYCLE, M, "fltarr", FLTARR, MSL, 
+     $        FNSP)
+      call FSE_READ_I_2D(FID1, CYCLE, M, "intarr", INTARR, MSL, 
+     $        INSP)
+      call FSE_CLOSE(FID1)
+\end{verbatim}
+
+\subsection{Reading Attributes}
+
+The usage for the attribute read routines are quite similar to the attribute write routines from before. Let us read the same attributes back that we had written in there before. And as before, global attributes are indicated by setting the cycle number to \verb!-1!.
+
+\begin{verbatim}
+      call FSE_OPEN("test.h5", FID1)
+      call FSE_READ_SATTR(FID1, -1, "codev", my_stringvar)
+      call FSE_READ_FATTR(FID1, -1, "mini", my_floatvar)
+      call FSE_READ_DATTR(FID1, -1, "mass_unit", my_doublevar)
+      call FSE_READ_IATTR(FID1, -1, "se_output", my_intvar)
+      call FSE_READ_IARRAYATTR(FID1, -1, "isotopes", my_intarrayvar, 10)
+      call FSE_CLOSE(FID1)
+\end{verbatim}
+
+To read the attributes back that we attached to the cycle \verb!CYCLE!, we have to issue the following commands:
+
+\begin{verbatim}
+      call FSE_OPEN("test.h5", FID1)
+      call FSE_READ_DATTR(FID1, CYCLE, "total_mass", MTOT)
+      call FSE_READ_FATTR(FID1, CYCLE, "maxradius", maxradius)
+      call FSE_READ_IATTR(FID1, CYCLE, "shellnb", mi)
+      call FSE_CLOSE(FID1)
+\end{verbatim}
+
+\subsection{Query Routines}
+
+\subsubsection{\texttt{FSENCYCLES}}
+Return number of cycles in an HDF5 file.
+
+\begin{verbatim}
+       call FSENCYCLES(FID1, NCYCLES)
+\end{verbatim}
+
+\subsubsection{\texttt{FSENSHELLS}}
+Get number of shells in cycle. 
+\begin{verbatim}
+      call FSENSHELLS(FID1, CYCLE, NSHELLS)
+\end{verbatim}
+
+\subsubsection{\texttt{FSENENTRIES}}
+Get number of entries in a dataset member.
+Returns one for scalar dataset members, and the number of elements in an array member.\begin{verbatim}
+      call FSENENTRIES(FID1, CYCLE, "yps", N)
+\end{verbatim}
+
+\subsubsection{\texttt{FSECYCLES}}
+Fill an integer array with all the cycles in filename
+\begin{verbatim}
+      call FSECYCLES(FID1, CYCLE, CYCLENUMBERS)
+\end{verbatim}
+
+\subsubsection{\texttt{FSELASTCYCLE}}
+Returns the highest cycle number in filename.
+\begin{verbatim}
+      call FSELASTCYCLE(FID1, LASTCYCLE)
+\end{verbatim}
+
+\subsubsection{\texttt{FSEGETNMEMBERS}}
+Returns the number of variables in cycle.
+\begin{verbatim}
+      call FSEGETNMEMBERS(FID1, CYCLE, NMEMBERS)
+\end{verbatim}
+
+\subsubsection{\texttt{FSEGETMEMBERNAME}}
+Returns the name of the variables saved in the cycle.
+\begin{verbatim}
+      call FSEGETMEMBERNAME(FID1, CYCLE, MEMBER_ID, 
+                             VARNAME)
+\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{The C/C++ interface for USEEPP}
+
+\subsection{Writing Global Attributes}
+
+\subsection{Writing Data Sets and their Attributes}
+
+\subsection{Reading Data Sets}
+
+\subsection{Reading Attributes}
+
+\subsection{Query Routines}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{The IDL interface for USEEPP}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{The Python interface for USEEPP}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Reformatting your Data with a Conversion Tool}
+
+Two examples for conversion tools are currently available, and you can modify them to produce a version for your own code. \verb!hpf2se! (which can be found on svn) is a Fortran tool to convert ASCII output into USEEPP output, see below. There is also a python tool that is writing USEEPP files\footnote{ms2ppn.py at svn://forum.astro.keele.ac.uk/utils/pyse/trunk}. This is currently used to convert output from the Geneva code to USEEPP. However, in general we recommend writing in USEEPP directly from the stellar evolution code. In this way you avoid downgrading the data accuracy which may happen if you write them first in some other format (like ASCII). And the USEEPP format is very simple to implement, and lossless.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{USEEPP Standard Conventions}
+
+\subsection{Units}
+
+The units are those to reduce quantities to the cgs unit system. For
+example, the array \texttt{tse} below contains the temperature vector
+in units of $10^8\mathrm{K}$, and therefore, the PPN can figure out
+the temperature $T$ in K through $T = tse \times \mathrm{temperature\_unit}$.
+
+\begin{verbatim}
+      codev            = "evol-l2" ! code name
+      mini             = 2.
+      mass_unit        = 1.9891d33
+      radius_unit      = 6.96e10
+      rho_unit         = 1.d0
+      temperature_unit = 1.d8
+      pressure_unit    = 1.d0
+      velocity_unit    = 1.d0
+      dcoeff_unit      = 1.d0
+      oneyear          = 3.1536D7
+\end{verbatim}
+
+
+\subsection{Species Identification}
+
+We also write some abundnace species that we
+use as a consistency check. The format does no force you to use a
+specific selection, but as a minimum PPN would want to see the
+following: H1, HE4, C12, O16 and NE20, SI28, NI56 for massive star
+models, while for AGB NE22 should be sufficient. In the USEEPP format
+we encode species with three numbers: Z, A and G which are the charge
+number, the mass number, and a third number for possible isomeric
+states.
+
+\subsection{Required Variables}
+
+We don't strictly need pressure, but we still include it in the SEE
+library. Velocity in post-processing of hydrostatic stellar evolution
+is obviously not needed. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% --------------------------- end matter ------------------------
+\vfill
+\section{Document administration}
+
+\subsection{History} 
+This document history complements the svn log.
+
+\begin{tabular*}{\textwidth}{lll}
+\hline
+Authors & yymmdd & Comment \\
+\hline
+FH & 080616 & generate template \\
+FH & 081001 & first draft Sect. \ref{sec:evol}  \\
+SD & 081009 & edited, added section \ref{sec:basics}, added direct examples, reorganized \\
+SD & 081113 & edited Fortran section, new file layout for SE 1.1\\
+\hline
+\end{tabular*}
+
+\subsection{TODO \& open issues} 
+\begin{tabular*}{\textwidth}{lll}
+\hline
+Requester & yymmdd & Item \\
+\hline
+SD & 081113 & FH, fill in the USEEPP conventions (units, isotopes, etc). \\
+SD & 081113 & SD, fill in the C code section. \\
+SD & 081113 & SD, fill in the IDL code section. \\
+SD & 081113 & GR, fill in the Python code section. \\
+\hline
+\end{tabular*}
+
+
+% --------------- latex template below ---------------------------
+
+
+
+%\begin{figure}[htbp]
+%   \centering
+%%   \includegraphics[width=\textwidth]{layers.jpg} % 
+%      \caption{}   \includegraphics[width=0.48\textwidth]{FIGURES/HRD90ms.png}  
+%   \includegraphics[width=0.48\textwidth]{FIGURES/HRD150ms.png}  
+%
+%   \label{fig:one}
+%\end{figure}
+%
+%\begin{equation}
+%Y_a = Y_k + \sum_{i \neq k} Y_i
+%\end{equation}
+%
+%{
+%%\color{ForestGreen}
+%\sffamily 
+%  {\center  --------------- \hfill {\bf START: Some special text} \hfill ---------------}\\
+%$Y_c$ does not contain ZZZ but we may assign one $Y_n$ to XYZ which is the decay product of the unstable nitrogen isotope JJHJ. %
+%
+%{\center ---------------  \hfill {\bf END:Some special text} \hfill ---------------}\\
+%}
+

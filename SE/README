@@ -1,0 +1,8 @@
+If you publish a paper based on work that benefitted from using the SE
+library, please consider including the following acknowledgment:
+
+This work used the SE library (LA-CC-08-057) developed at Los Alamos
+National Laboratory as part of the NuGrid collaboration; SE makes use
+of the HDF5 library, which was developed by The HDF Group and by the
+National Center for Supercomputing Applications at the University of
+Illinois at Urbana-Champaign.

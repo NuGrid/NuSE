@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Expected output
+xo1=""
+xo2=""
+
+dname=`mktemp -d ./tmp.XXXXXXXX` || exit 1
+cd $dname
+
+# Actual output
+out1=`../testbackup`
+# out2=`h5diff test.h5 test2.h5`
+
+cd ..
+rm -rf $dname
+
+if [ "$out1" != "$xo1" ]; then
+    echo "$out1"
+    exit 1
+fi
+
+if [ "$out2" != "$xo2" ]; then
+    echo "$out2"
+    exit 1
+fi

@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Expected output
+xo1=""
+xo2="Only in .: testfile.h5"
+
+dname=`mktemp -d ./tmp.XXXXXXXX` || exit 1
+cd $dname
+
+# Actual output
+out1=`../asciitestconvert ../$srcdir/input/HPF.3100?`
+out2=`diff -qr ../$srcdir/output .`
+
+cd ..
+rm -rf $dname
+
+if [ "$out1" != "$xo1" ]; then
+    echo "$out1"
+    exit 1
+fi
+
+if [ "$out2" != "$xo2" ]; then
+    echo "$out2"
+    exit 1
+fi

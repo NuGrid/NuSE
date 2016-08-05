@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# Expected output
+xo1="Calling to read model number 31001
+Calling to read model number 31002
+Calling to read model number 31003
+Calling to read model number 31004
+Calling to read model number 31005
+Calling to read model number 31006
+Calling to read model number 31007
+Calling to read model number 31008
+Calling to read model number 31009"
+xo2=""
+
+dname=`mktemp -d ./tmp.XXXXXXXX` || exit 1
+cd $dname
+
+# Actual output
+out1=`../fsewrite`
+out2=`h5diff test.h5 test2.h5`
+
+cd ..
+rm -rf $dname
+
+if [ "$out1" != "$xo1" ]; then
+    echo "$out1"
+    exit 1
+fi
+
+if [ "$out2" != "$xo2" ]; then
+    echo "$out2"
+    exit 1
+fi

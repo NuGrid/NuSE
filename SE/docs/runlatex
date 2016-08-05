@@ -1,0 +1,6 @@
+pdflatex useepp-chapter
+pdflatex useepp-chapter
+makeindex useepp-chapter
+bibtex useepp-chapter
+pdflatex useepp-chapter
+pdflatex useepp-chapter

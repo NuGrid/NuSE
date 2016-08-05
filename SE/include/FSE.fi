@@ -1,0 +1,5 @@
+c     -*- mode: Fortran -*-
+      integer SE_INT, SE_FLOAT, SE_DOUBLE,
+     $     SE_INT_2D, SE_FLOAT_2D, SE_DOUBLE_2D
+      parameter (SE_INT = 0, SE_FLOAT = 1, SE_DOUBLE = 2,
+     $     SE_INT_2D = 10, SE_FLOAT_2D = 11, SE_DOUBLE_2D = 12)

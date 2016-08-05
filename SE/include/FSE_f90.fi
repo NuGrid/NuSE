@@ -1,0 +1,3 @@
+!    -*- mode: F90 -*-
+  integer, parameter :: SE_INT = 0, SE_FLOAT = 1, SE_DOUBLE = 2,      &
+       SE_INT_2D = 10, SE_FLOAT_2D = 11, SE_DOUBLE_2D = 12
