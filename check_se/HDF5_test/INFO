@@ -1,0 +1,11 @@
+
+test_hdf5.py allows to test MPPNP HDF5 directories (H5_surf,H5_out,H5_restart).
+plus the MESA SE HDF5 files. See input parameter in test_hdf5.py.
+
+test_hdf5_sets.sh: Simple bash script which allows to test whole sets.
+
+The test results of set1.1 and set1.2 are also available in this directory.
+
+miss_corr_badplace_HDF5finder.py does the same as test_hdf5.py plus aslo checking for bad placements (for example a cycle placed at the beginning of a se.h5.file instead of being at the end of the previous file) of se.h5 cycles.
+
+copy_H5groups.py ---> Once corrupted and missplaced se.cycles are found with miss_corr_badplace_HDF5finder.py, the user can manually remove them and then run copy_H5groups.py replacing all the missing cycles them copying the previous cycle.

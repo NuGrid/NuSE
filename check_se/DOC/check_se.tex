@@ -1,0 +1,499 @@
+% *********** Document name and reference:
+% Title of document
+\renewcommand{\ndoctitle}{Check\textunderscore se.py: Script for checking se output of MESA and NuGrid tools} 
+% Document category acronym 
+\renewcommand{\ndocname}{chem}                      
+% svn dir
+\renewcommand{\svndir}{svn://forum.astro.keele.ac.uk/utils/GCE/CHEM}  
+% Contributors to this document
+\renewcommand{\ndoccontribs}{CR,CF}
+
+\input{chap}
+
+Document name: \ndocname \\
+SVN directory: \svndir\\
+Contributors: \ndoccontribs\\
+
+
+
+{  \textbf{Abstract:} \slshape
+\ndocname\ allows to extensively check the se files for missing cycles and corrupted input.
+
+
+%##############################################################
+%# Section: Introduction
+%##############################################################
+
+\section{Introduction}
+\index{\ndocname}
+Welcome to the \ndocname.py user Guide. The purpose of \ndocname.py is to 
+provide the user with a tool to do chemical evolution calculations.
+The focus lies on simplification and user-friendliness. Therefore only basic
+assumptions like instantaneous mixing are used.
+Also there is no inflow or outflow.
+However included are low- till massive star contributions, including
+SN2 and SN1a.
+
+
+
+This document will provide the user with a 
+tutorial and walk through of the tools contained within \ndocname.py and
+how a typical user would go about using and working with this python module.
+
+\subsection{Environment}%Tutorial and Walkthough}
+
+Start an interactive ipython session with
+the mpython command defined as
+
+\begin{verbatim}
+alias mpython='ipython -pylab -p numpy'
+\end{verbatim}
+.
+
+In order to set the ipython environment correctly,
+make sure that the IPYTHON variable points to the
+necessary python scripts.
+The scripts chem.py and read\textunderscore yields.py
+are needed and available on the NuGrid svn in:
+
+\begin{verbatim}
+../utils/GCE/CHEM.
+\end{verbatim}
+
+Also yield tables are available in CHEM as well as
+other more choices in the yields\textunderscore tables
+sub directory.
+
+
+For bash:
+\begin{verbatim}
+export PYTHONPATH= ../utils/GCE/CHEM
+\end{verbatim}
+For tcsh:
+\begin{verbatim}
+setenv PYTHON ../utils/GCE/CHE
+\end{verbatim}
+
+When you do not use the NuGrid dir, make sure you have
+all necessary scripts, e.g. nugridse.py and mesa.py within
+your PYTHONPATH, as well as the modules, e.g. h5py, installed.
+
+
+
+If the ipython executable is {\bf not} currently  located in your PATH variable a
+\newline
+\begin{verbatim}
+ whereis ipython
+\end{verbatim}
+will provide you with the absolute location of the ipython executable.  
+
+
+\subsection{Getting Started with GCE}
+
+To following shows a short example.
+
+Import the module:
+
+\begin{verbatim}
+>import sygma
+\end{verbatim}
+
+Next, initiate the class instance which is represented
+by a executed GCE simulation:
+
+\begin{verbatim}
+>s=sygma.sygma(alphaimf=-2.35,dt=1e7,tend=1e10,mgal=1e9,
+ table='yield_tables/isotope_yield_table.txt',
+ sn1a_table='yield_tables/sn1a_t86.txt',
+ bb_table='yield_tables/bb_walker91.txt')
+\end{verbatim}
+
+To analyze the run see the section about output.
+
+
+\subsection{Input}
+
+Input variables for the chem function are the following:
+
+\begin{itemize}
+
+
+  \item alphaimf: Setting the salpeter exponent for the initial mass function.
+  \item iniZ: Define at which metallicity you want to start (possible Z= 0,0.02,0.01,0.006,0.001,0.0001)
+  \item sfr: if 'input': Use sfr\textunderscore input file to read star formation for each timestep.
+                         Specifies how much percent of ISM gas goes into stars. 
+             if 'schmidt': Use the Schmidt birthrate B as specified in Timmes et al. 1995:
+					$B = 2.8*m_{tot}* (m_{gas}/m_{tot})^2$ 
+					where $m_{tot}$ and $m_{gas}$ is the total mass (density) 
+					and the gas mass (density) respectively.
+
+  \item dt: Time steps of the simulation (years)
+	\item tend: Total time of simulation (years)
+	\item mgal: Total mass content of simulation (Msun)
+		
+  \item table: NuGrid table with AGB and massive star yields (Msun)
+  \item sn1a\textunderscore on: If true includes Sn1a, else not
+  \item sn1a\textunderscore table: Table containing the SN1a yields (Msun)
+  \item bb\textunderscore table: Table of initial abundances in mass fractions
+		(e.g. Big Bang)
+\end{itemize}
+
+
+\subsection{Output}
+
+
+To plot results, different functions are available.
+
+To see the evolution of the mass fraction of elements or isotopes 
+a plot() function with the following input parameter can be used:
+
+
+\begin{itemize}
+  \item xaxis/yaxis: Plot either 'age' for the time, 'Z' for the
+	total metallicity, isotopes (format: 'H-1') or elements (format: 'H')
+   \item source: Specifies if yields come from
+            all sources ('all'), including
+          AGB+SN1a, massive stars. Or from
+          distinctive sources:
+         only AGB stars ('agb'), only
+          SN1a ('SN1a'), or only massive star ('massive')	
+	\item norm : if 'no', no normalization of mass fraction,
+                 if 'ini', normalization ot initial abundance
+
+	
+	
+  \item fig: to name the plot figure
+\end{itemize}
+
+To plot the evolution of species in spectroscopic notation,
+use the plot\textunderscore spec() function with the parameter:
+
+\begin{itemize}
+  \item xaxis: Use either 'age' for the time, or the
+				spectroscopic notation (format: '[Fe/H]')
+  \item yaxis: Use the spectroscopic notation (format: '[Fe/H]')
+  
+   \item source: Specifies if yields come from
+            all sources ('all'), including
+          AGB+SN1a, massive stars. Or from
+          distinctive sources:
+         only AGB stars ('agb'), only
+          SN1a ('SN1a'), or only massive star ('massive')
+
+  	\item label: Label for legend
+  \item fig: to name the plot figure
+\end{itemize}
+
+The solar abundance is taken from GN93 (NuGrid file).
+
+To get an overview over the available abundance distribution
+(in mass fraction divided by solar mass fraction) of the ISM at a certain timestep a function
+called plot\textunderscore abu\textunderscore distr() is available,
+but still experimental.
+
+\begin{itemize} 
+
+\item t: time at which distribution is taken from, 
+\item if -1: take abundance of last timestep (only -1 option is implemented)
+\item x\textunderscore axis: if 'A' plot versus mass number A (only this implemented)		
+\item solar\textunderscore norm: if True, use the solar normalization
+\item marker1: choose marker type, 1,2,3
+\item linest: choose linestyle, 1,2,3
+\item y\textunderscore range: (optional) specify the y range
+\item label: label of figure
+\item fig: Figure name				
+\end{itemize} 
+
+
+
+To monitor the evolution of the ISM gas mass / ejected
+masses over time use plot\textunderscore masses():
+
+\begin{itemize} 
+
+\item mass: either 'gas' for ISM/ejected mass or 'stars' for
+		locked away mass
+   \item source: Specifies if yields come from
+            all sources ('all'), including
+          AGB+SN1a, massive stars. Or from
+          distinctive sources:
+         only AGB stars ('agb'), only
+          SN1a ('SN1a'), or only massive star ('massive')
+\item norm: normalization either by using the total (initial gas)
+                                mass mgal with 'ini', 
+                                or the current total gas mass 'current'.
+                                The latter case makes sense when comparing different
+                                sources (see below)
+\item log: if true use log y axis
+\item fig: figure name
+0,mass='gas',source='all',norm='ini',label='',log=False):
+
+\end{itemize} 
+
+
+To see the SFR over time the function
+ 
+
+
+plot\textunderscore sfr()
+
+plots the star formation rate
+                        over time. If the input\textunderscore sfr file
+                        is used plot this factor over time.
+                        If a star formation formula is
+                        used. e.g. 'schmidt' plots
+                        the star formation rate [Msun/yr]
+
+
+are available.
+
+
+
+In the case you want to write out chemical evolution
+of isotopes, use:
+
+\begin{verbatim}
+chem1.write_evol_table(table_name='gcetable.txt')
+\end{verbatim}
+
+\begin{itemize}
+    \item table\textunderscore name:  specify name of the table
+\end{itemize}
+
+It writes out age, metallicity Z and isotopes
+for each timestep (each timestep a line).
+
+\subsection{Program structure}
+
+The program details are explained in the following while
+a flow chart of the running program is given in Fig. \ref{chart}
+
+The main program is the chem class containing different
+functions which are called when running/creating an instance
+or afterwards for plotting or data extraction.
+
+First the yield table files are read in using
+classes in the file read\textunderscore yields.py.
+The first one is a file with a 'Nugrid yield table' structure containing
+yields of isotopes in solar masses plus lifetimes. Additionally,
+a table containing SN1a yield data in solar masses is read.
+If this file contains metallicity-dependence yields, this dependence
+is adopted. Also a table file for initial abundances is read in (
+Big Bang abundances) in mass fraction.
+
+Then the program starts calculating the timesteps.
+First the metallicity is of the ISM, consisting of initial abundances,
+is calculated (in case of BB abundance it is 0, function getmetallicity).
+Afterwards the star formation rate is calculated (function sfr).
+
+Then the change of the ISM affected by the SFR is determined.
+Important is hereby, that a part of the ISM is locked away in stars,
+while (metal rich) stellar ejecta contributes to the ISM.
+The ejecta is weighted by using an IMF and it is assumed
+that all masses is ejected at the end of the lifetime of a star.
+
+
+A delay time distribution (DTD) as specified
+in Eq. 10 in Vogelsberger et al. (2013) is implemented in order
+to calculate the number of SN1a events. The advantage of this
+method is that progenitor, binary fraction and IMF information
+is already contained. For each timestep with star formation
+(new population), the contribution of SN1a ejecta of the
+new population in all following timesteps is taken into account.
+
+
+%For simplicity, SN1a occur for 1\% of AGB stars between 3Msun
+%and 8Msun (Pritchet et al. 2008).
+The function sfrmdot does all the steps mentioned above.
+
+\subsection{Implementation details}
+
+\subsubsection{The class history}
+
+An extra class was introduced carrying
+all the information about the history.
+The idea is to clearly separate the 
+simulation variables (needed to run
+the code) and the variables saving
+the results. Additionally, it is easier
+to add further history variables since all
+of them are at one location.
+
+\subsubsection{ISM contribution sources}
+
+In order to identify for each isotope and element
+the contributing source(s) extra variables carry
+the information about AGB star, SN1a and massive
+star contribution. This makes the code clearly
+slower, especially when calculating the elemental
+contribution from the isotopic ones at the end
+of the simulation.
+
+\subsubsection{Dealing with the limited number of metallicities}
+
+When given a certain ISM metallicity,the question arise which
+models from the metallicity grid (and their yields) should be chosen.
+Due to the lack of available simulations below Z=1e-4 (initial metallicity, set1.5a),
+yields with initial metallicity of Z=1e-4 have to be used. In
+the future Alex Heger's models might help to partly overcome this problem.
+For super-solar cases the solar metallicity models are chosen.
+
+For ISM Z values inside the grid, a interpolation of the grid yields
+to the ISM metallicity has to be done.
+There are different ways of interpolation. One simple way
+is to linear interpolate between two metallicities of the grid 
+$Z_i$, $Z_{i+1}$,
+in order to get approximated yields $Y_{inter}$ at the ISM metallicity.
+
+\begin{equation}
+Y_{inter} = /(Y_i-Y_{i+1})/(Z_i-Z_{i+1}) * Z_{inter}
+\end{equation}
+
+
+Even though this method is used in Timmes et al. (1995)
+it has clear disadvantages as explained in Wiersma et al (2009).
+Another method, as motivated in the latter paper, is to split
+the stellar ejecta into two components, the ones which are not
+affected by the nucleosynthesis and the others which are 
+produced or destroyed. As a result, a interpolation between
+the ISM mass fraction and initial stellar mass fraction 
+(simulation) for each isotope is done.
+
+\begin{equation}
+Eq. 6 in Wiersma et al (2009)
+\end{equation}
+
+
+The yield interpolation is done in the interpolate\textunderscore yields method,
+in which the first, simpler method, is currently chosen.
+
+
+The same assumption is used for the Z-dependent SN1a data.
+
+
+\subsubsection{IMF and mass intervals}
+
+With the factor $imf$ being the GCE input one can derive for a mass interval $i$
+from $m_{a,i}$ to $m_{b,i}$ the number of stars $N_i$:
+
+
+\begin{equation}
+N_i = k \int_{m_a}^{m_b} m^{-2.35} dm = p ( m_b^{-1.35} - m_a^{-1.35} )
+\end{equation}
+
+with $k$ being the normalization constant and $p = -k/1.35$.
+The total mass in the interval can be calculated by using 
+
+\begin{equation}
+M_i = k \int_{m_a}^{m_b} m^{-2.35}\, m\, dm = p^* ( m_b^{-0.35} - m_a^{-0.35} )
+\label{eq:imf}
+\end{equation}
+
+with $p^* = -k/0.35$.
+
+Due to the fact that only a limited number of simulated masses
+need to covering the whole (chosen) mass range of the IMF it is necessary
+to assign each mass a certain mass interval of the IMF.
+The number of stars occupying each interval are then represented
+by the available simulated mass $m_i$ in the interval and its yields.
+
+Then it follows for the mass $M_i$ of a interval i
+with available (simulated) star mass $m_i$:
+ 
+\begin{equation} 
+M_i=p ( m_{b,i}^{-1.35} - m_{a,i}^{-1.35} ) * m_i = N_i * m_i
+\end{equation}
+
+Being $m_{l}$ and $m_{u}$ now the outer boundaries of the total mass range
+under consideration,
+covered by a number of mass intervals i with available star mass $m_i$,
+then the total mass is given by:
+
+\begin{equation}
+M_{tot} = p \sum\limits_{i}( m_{b,i}^{-1.35} - m_{a,i}^{-1.35} ) * m_i
+\end{equation}
+
+
+In order to extend the total mass range, chosen as $m_{l}=0.5$ and $m_{u}=40$,
+to $m_{l*}=0.1$ and $m_{u*}=100$ (to the more quoted limits) one has to use the factor $fac$,
+which makes use of Eq. \ref{eq:imf}:
+
+
+\begin{equation}
+fac = \frac{M_{tot}}{M^*_{tot}}
+= \frac{k \int_{m_l}^{m_u} m^{-2.35}\, m\, dm }{k \int_{m_{l*}}^{m_{u*}} m^{-2.35}\, m\, dm}
+= \frac{ ( m_u^{-0.35} - m_l^{-0.35} ) } { ( m_{l*}^{-0.35} - m_{u*}^{-0.35} ) }
+\end{equation}
+
+The weight (number of stars) $massfac$, given a specific
+system (gas cloud) of mass $M_c$, for each simulated mass $m_i$ is then:
+
+
+\begin{equation}
+massfac_i = M_c * fac * \frac{N_i}{ M_{tot} }
+\end{equation}
+
+The yield contribution $Y_{i,iso}$ of a simulated star mass $i$ 
+of a certain isotope $iso$ can then be used to calculate
+the total mass of the cloud $Y_{c,i,iso}$:
+
+\begin{equation}
+Y_{c,i,iso} = Y_{i,iso} * massfac_i
+\end{equation}
+
+\subsubsection{Comment on SFR and input methods}
+
+Due to the fact that this is a 1-D 'box'-model,
+but star formation rates in literature are 
+typically derived and given in mass per time
+and per surface or volume density, the current
+approach might be questionable.
+
+In this code, the dependency of the SFR from
+the area is ignored and the literature values
+taken as mass per time. 
+
+
+\subsection{Disclaimer}
+
+		
+\subsection{History} 
+This document history complements the svn log.
+
+\begin{tabular*}{\textwidth}{lll}
+\hline
+Authors & yymmdd & Comment \\
+\hline
+CR & 130926 & creation \\
+\end{tabular*}
+
+
+\subsection{Contact}
+If any bugs do appear or if there are any questions, please email critter@uvic.ca
+% --------------- latex template below ---------------------------
+\begin{verbatim}
+
+\end{verbatim}
+
+
+%\begin{figure}[htbp]
+%   \centering
+%%   \includegraphics[width=\textwidth]{layers.jpg} % 
+%      \caption{}   \includegraphics[width=0.48\textwidth]{FIGURES/HRD90ms.png}  
+%   \includegraphics[width=0.48\textwidth]{FIGURES/HRD150ms.png}  
+%
+%   \label{fig:one}
+%\end{figure}
+%
+%\begin{equation}
+%Y\_a = Y\_k + \sum\_{i \neq k} Y\_i
+%\end{equation}
+%
+%{
+%%\color{ForestGreen}
+%\sffamily 
+%  {\center  --------------- \hfill {\bf START: Some special text} \hfill ---------------}\\
+%$Y\_c$ does not contain ZZZ but we may assign one $Y_n$ to XYZ which is the decay product of the unstable nitrogen isotope JJHJ. %
+%
+%{\center ---------------  \hfill {\bf END:Some special text} \hfill ---------------}\\
+%}

@@ -1,0 +1,6 @@
+pdflatex check_se-chapter
+pdflatex check_se-chapter
+makeindex check_se-chapter
+bibtex check_se-chapter
+pdflatex check_se-chapter
+pdflatex check_se-chapter

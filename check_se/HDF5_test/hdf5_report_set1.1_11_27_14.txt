@@ -1,0 +1,214 @@
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Cannot read elements (f.keys()) in file /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_out/M1.65Z0.010.standard.0014001.out.h5
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 500
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Cannot open file /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M1.65Z1.0e-02.standard/H5_surf/M1.65Z0.010.standard.0050001.surf.h5
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M15.0.Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M15.0.Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+missing cycles in sefiles.se.cycles:
+Cycle 107020
+Cycle 107120
+Cycle 107220
+Cycle 107320
+Cycle 107420
+Cycle 107520
+Cycle 107620
+Cycle 107720
+Cycle 107820
+Cycle 107920
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M15.0.Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M15.0.Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 500
+missing cycles in sefiles.se.cycles:
+Cycle 107500
+Cycle 107593
+Cycle 107688
+Cycle 107783
+Cycle 107878
+Cycle 107880
+Cycle 107889
+Cycle 107896
+Cycle 107900
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M15.0.Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M15.0.Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M2.00Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M2.00Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M2.00Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M2.00Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 500
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M2.00Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M2.00Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M20.0.Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M20.0.Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M20.0.Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M20.0.Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 500
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M20.0.Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M20.0.Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M25.0.Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M25.0.Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M25.0.Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M25.0.Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 500
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M25.0.Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M25.0.Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M3.00Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M3.00Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M3.00Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M3.00Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 500
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M3.00Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M3.00Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M4.00Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M4.00Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M4.00Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M4.00Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 100
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M4.00Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M4.00Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M5.00Z1.0e-02.standard/H5_out
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M5.00Z1.0e-02.standard/H5_out
+filetype found: H5_out
+Start cycle test with steps of 20
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M5.00Z1.0e-02.standard/H5_restart
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M5.00Z1.0e-02.standard/H5_restart
+filetype found: H5_restart
+Start cycle test with steps of 500
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+/astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M5.00Z1.0e-02.standard/H5_surf
+####################################################
+Checking directory /astro/critter/critter1/CADC/NuGrid/data/set1/set1.1/ppd_wind/M5.00Z1.0e-02.standard/H5_surf
+filetype found: H5_surf
+Start cycle test with steps of 1
+no missing in sefiles.se.cycles 
+No corrupted cycles
+Check for SE_DATASETs successfull
+##################################
+######## Test finished ###########
+##################################
