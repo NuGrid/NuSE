@@ -1,7 +1,7 @@
-#  SE-library
+#  NuSE
 
 Software compilation to write stellar evolution output in the USEEPP (HDF5) format. 
-Requirement of MPPNP. 
+SE is a requirement of MPPNP. 
 
 
 _See the [wiki](https://github.com/NuGrid/SE-library/wiki) for more details_
