@@ -1,0 +1,49 @@
+CR
+
+#What you need  to write se files:
+0) Environment:
+	You need the se_write routine provided in this directory.
+
+
+1) Initialize a instance of the startfile routine (file_write).
+   Specify the file name in this step ('example.se.h5')
+   
+   >>> file_write = sewrite.startfile('example.se.h5') 
+    
+2) Then specify the so called global header parameter for the file.
+    They can be a unique ID for the se file or carry general information
+    Use the instance with the command write_hattr(). Each parameter needs
+	a name (key) and a value, specified in arrays in the first and second
+	argument respectively. The arrays hattr_name and hattr_data
+    are used for this below.
+    
+    >>> file_sewrite.write_hattr(hattr_name, hattr_data)    
+
+
+3) Next it is necessary to 
+   to write the data entries (cycles) 
+
+   a) First the header info for the data/cycle entry must be specified:
+      You do this with the method of write_dcol()) where you specify
+      the cycle number first and then in a similar fashion the
+      cycle data arrays for names and values (dcol_name=[..,..], 
+      dcol_data=[..,..] below).
+	  The values are itself arrays, e.g. consisting of temperature and
+	  density profiles.
+      
+    >>> file_sewrite.write_dcol(cycle_number, dcol_name, dcol_data)
+    
+    
+    b) In the last step of writing a cycle, specify the cycle attributes.
+		Do this with write_cattr(). Again the first argument is the
+		cycle number, and then again data name and value arrays.
+		An example is the timestep of the cycle.
+    
+    >>> file_sewrite.write_cattr(cycle_number, cattr_name, cattr_data)  
+    
+4) Repeat step 3) to add your cycles.
+
+Then the se file is created. For an example hae a look at the
+se_write_example.py and run it.
+
+'
