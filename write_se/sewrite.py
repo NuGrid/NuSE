@@ -25,7 +25,7 @@ ToDo:
 
 '''
 import numpy
-from write_se import se
+import se
 import tables
 #from itertools import izip as izip
 
@@ -47,17 +47,17 @@ class startfile():
             table_val = numpy.array(table_val)
 
         try:
-            sefile = tables.openFile(self.output_file, mode = "r+")
+            sefile = tables.open_file(self.output_file, mode = "r+")
         except IOError:
-            sefile = tables.openFile(self.output_file, mode = "a")
-            sefile.setNodeAttr("/", "SE_version", "1.2")
+            sefile = tables.open_file(self.output_file, mode = "a")
+            sefile.set_node_attr("/", "SE_version", "1.2")
 
         table_val_type = tables.Float64Col(shape=table_val.shape[1:]) #table_val_type is float by default
         if (str(table_val.dtype) == "int32") or (str(table_val.dtype) == "int64"):
             table_val_type = tables.Int64Col(shape=table_val.shape[1:])
 
         description = {"data": table_val_type}
-        table = sefile.createTable('/', table_name, description,
+        table = sefile.create_table('/', table_name, description,
                                 filters=tables.Filters(complevel = 6))
 
         row = table.row
