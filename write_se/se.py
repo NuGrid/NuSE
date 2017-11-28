@@ -131,7 +131,7 @@ def write(filename, cyclenumber, vecs):
                                filters=tables.Filters(complevel = 6))
 
     row = table.row
-    for i in xrange(min(len(x[2]) for x in vecs)):
+    for i in range(min(len(x[2]) for x in vecs)):
         for x in vecs:
             row[x[0]] = x[2][i]
         row.append()
@@ -268,7 +268,7 @@ def namefromcycle(cyclenumber, version):
     SE 1.0 and 1.1 used dashes; SE 1.2 uses zero-padded integers with
     10-digit field width.
     """
-    if version == "1.2":
+    if version == b'1.2':
         return "cycle%010d" % cyclenumber
     else:
         return "cycle-" + str(cyclenumber)

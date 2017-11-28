@@ -25,9 +25,9 @@ ToDo:
 
 '''
 import numpy
-import se
+from write_se import se
 import tables
-from itertools import izip as izip
+#from itertools import izip as izip
 
 class startfile():
     output_file = ""
@@ -37,9 +37,9 @@ class startfile():
 
     def write_hattr(self, hattr_name, hattr_val):
         if len(hattr_name) != len(hattr_val):
-            print "Error: Write_hattr, list of names and values do not match."
+            print ("Error: Write_hattr, list of names and values do not match.")
         else:
-            for i in xrange(len(hattr_name)):
+            for i in range(len(hattr_name)):
                 se.writeattr(self.output_file,-1,hattr_name[i],hattr_val[i])
 
     def write_table(self, table_name, table_val):
@@ -61,7 +61,7 @@ class startfile():
                                 filters=tables.Filters(complevel = 6))
 
         row = table.row
-        for i in xrange(len(table_val)):
+        for i in range(len(table_val)):
             row["data"] = table_val[i]
             row.append()
         sefile.close()
@@ -69,9 +69,9 @@ class startfile():
     def write_cattr(self, cyc, cattr_name, cattr_val):
         cattr_list = []
         if len(cattr_name) != len(cattr_val):
-            print "Error: Write_cattr, list of names and value list do not match."
+            print ("Error: Write_cattr, list of names and value list do not match.")
         else:
-            for name, val in izip(cattr_name, cattr_val):
+            for name, val in zip(cattr_name, cattr_val):
                 if name == "age":
                     val = numpy.array([val])#h5T.py h5File() requires that age
                                             #is a numpy array
@@ -80,9 +80,9 @@ class startfile():
     def write_dcol(self, cyc, dcol_name, dcol_val):
         dcol_list = []
         if len(dcol_name) != len(dcol_val):
-            print "Error: Write_dcol, list of names and value list do not match."
+            print ("Error: Write_dcol, list of names and value list do not match.")
         else:
-            for name, val_list in izip(dcol_name, dcol_val):
+            for name, val_list in zip(dcol_name, dcol_val):
                 if not (hasattr(val_list,"shape") and hasattr(val_list,"dtype")):
                     val_list = numpy.array(val_list)
 
