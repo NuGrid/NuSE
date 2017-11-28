@@ -23,6 +23,7 @@ other ways, this module will remain horribly inefficient for now.
 """
 
 import tables
+print (tables.__file__)
 import warnings
 
 warnings.simplefilter('ignore', tables.exceptions.NaturalNameWarning)
@@ -58,7 +59,7 @@ def getcycles(filename):
     general.
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
     ver = getversion(sefile)
 
     if ver == "1.0":
@@ -84,7 +85,7 @@ def read(filename, cyclenumber, *vecs):
     difference isn't that big.
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
     ver = getversion(sefile)
 
     if ver == "1.0":
@@ -112,10 +113,10 @@ def write(filename, cyclenumber, vecs):
     """
 
     try:
-        sefile = tables.openFile(filename, mode = "r+")
+        sefile = tables.open_file(filename, mode = "r+")
     except IOError:
         writeattr(filename, -1, "SE_version", "1.2")
-        sefile = tables.openFile(filename, mode = "a")
+        sefile = tables.open_file(filename, mode = "a")
 
     ver = getversion(sefile)
 
@@ -146,7 +147,7 @@ def readattr(filename, cyclenumber, name):
     global (i.e., file-level) attributes.
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
 
     ver = getversion(sefile)
 
@@ -170,9 +171,9 @@ def writeattr(filename, cyclenumber, name, value):
     """
 
     try:
-        sefile = tables.openFile(filename, mode = "r+")
+        sefile = tables.open_file(filename, mode = "r+")
     except IOError:
-        sefile = tables.openFile(filename, mode = "a")
+        sefile = tables.open_file(filename, mode = "a")
         sefile.setNodeAttr("/", "SE_version", "1.2")
 
     ver = getversion(sefile)
@@ -209,7 +210,7 @@ def readarrayattr(filename, cyclenumber, tablename, colname='data'):
     Thanks Python.)
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
 
     ver = getversion(sefile)
 
@@ -236,9 +237,9 @@ def writearrayattr(filename, cyclenumber, name, type, value):
     """
 
     try:
-        sefile = tables.openFile(filename, mode = "r+")
+        sefile = tables.open_file(filename, mode = "r+")
     except IOError:
-        sefile = tables.openFile(filename, mode = "a")
+        sefile = tables.open_file(filename, mode = "a")
         sefile.setNodeAttr("/", "SE_version", "1.2")
 
     ver = getversion(sefile)
