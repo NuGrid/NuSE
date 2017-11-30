@@ -36,7 +36,7 @@ def getversion(sefile):
     """
 
     try:
-        attr = sefile.getNodeAttr("/", "SE_version")
+        attr = sefile.get_node_attr("/", "SE_version")
     except AttributeError:
         attr = "1.0"
     
@@ -58,7 +58,7 @@ def getcycles(filename):
     general.
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
     ver = getversion(sefile)
 
     if ver == "1.0":
@@ -84,17 +84,17 @@ def read(filename, cyclenumber, *vecs):
     difference isn't that big.
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
     ver = getversion(sefile)
 
     if ver == "1.0":
         node = "/"
         name = namefromcycle(cyclenumber, ver)
     else:
-        node = sefile.getNode("/", namefromcycle(cyclenumber, ver))
+        node = sefile.get_node("/", namefromcycle(cyclenumber, ver))
         name = "SE_DATASET"
         
-    cycle = sefile.getNode(node, name)
+    cycle = sefile.get_node(node, name)
 
     data = [cycle.col(x) for x in vecs]
 
@@ -112,10 +112,10 @@ def write(filename, cyclenumber, vecs):
     """
 
     try:
-        sefile = tables.openFile(filename, mode = "r+")
+        sefile = tables.open_file(filename, mode = "r+")
     except IOError:
         writeattr(filename, -1, "SE_version", "1.2")
-        sefile = tables.openFile(filename, mode = "a")
+        sefile = tables.open_file(filename, mode = "a")
 
     ver = getversion(sefile)
 
@@ -123,15 +123,15 @@ def write(filename, cyclenumber, vecs):
         node = "/"
         name = namefromcycle(cyclenumber, ver)
     else:
-        node = sefile.createGroup("/", namefromcycle(cyclenumber, ver))
+        node = sefile.create_group("/", namefromcycle(cyclenumber, ver))
         name = "SE_DATASET"
 
     description = dict((x[0], x[1]) for x in vecs)
-    table = sefile.createTable(node, name, description,
+    table = sefile.create_table(node, name, description,
                                filters=tables.Filters(complevel = 6))
 
     row = table.row
-    for i in xrange(min(len(x[2]) for x in vecs)):
+    for i in range(min(len(x[2]) for x in vecs)):
         for x in vecs:
             row[x[0]] = x[2][i]
         row.append()
@@ -146,14 +146,14 @@ def readattr(filename, cyclenumber, name):
     global (i.e., file-level) attributes.
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
 
     ver = getversion(sefile)
 
     if cyclenumber == -1:
-        attr = sefile.getNodeAttr("/", name)
+        attr = sefile.get_node_attr("/", name)
     else:
-        attr = sefile.getNodeAttr("/", name, namefromcycle(cyclenumber, ver))
+        attr = sefile.get_node_attr("/", name, namefromcycle(cyclenumber, ver))
 
     sefile.close()
 
@@ -170,17 +170,17 @@ def writeattr(filename, cyclenumber, name, value):
     """
 
     try:
-        sefile = tables.openFile(filename, mode = "r+")
+        sefile = tables.open_file(filename, mode = "r+")
     except IOError:
-        sefile = tables.openFile(filename, mode = "a")
-        sefile.setNodeAttr("/", "SE_version", "1.2")
+        sefile = tables.open_file(filename, mode = "a")
+        sefile.set_node_attr("/", "SE_version", "1.2")
 
     ver = getversion(sefile)
 
     if cyclenumber == -1:
-        sefile.setNodeAttr("/", name, value)
+        sefile.set_node_attr("/", name, value)
     else:
-        sefile.setNodeAttr("/", name, value, namefromcycle(cyclenumber, ver))
+        sefile.set_node_attr("/", name, value, namefromcycle(cyclenumber, ver))
 
     sefile.close()
 
@@ -209,15 +209,15 @@ def readarrayattr(filename, cyclenumber, tablename, colname='data'):
     Thanks Python.)
     """
 
-    sefile = tables.openFile(filename, mode = "r")
+    sefile = tables.open_file(filename, mode = "r")
 
     ver = getversion(sefile)
 
     if cyclenumber == -1:
-        table = sefile.getNode("/", tablename)
+        table = sefile.get_node("/", tablename)
     else:
-        node = sefile.getNode("/", namefromcycle(cyclenumber, ver))
-        table = sefile.getNode(node, tablename)
+        node = sefile.get_node("/", namefromcycle(cyclenumber, ver))
+        table = sefile.get_node(node, tablename)
         
     data = table.col(colname)
 
@@ -236,10 +236,10 @@ def writearrayattr(filename, cyclenumber, name, type, value):
     """
 
     try:
-        sefile = tables.openFile(filename, mode = "r+")
+        sefile = tables.open_file(filename, mode = "r+")
     except IOError:
-        sefile = tables.openFile(filename, mode = "a")
-        sefile.setNodeAttr("/", "SE_version", "1.2")
+        sefile = tables.open_file(filename, mode = "a")
+        sefile.set_node_attr("/", "SE_version", "1.2")
 
     ver = getversion(sefile)
 
@@ -252,7 +252,7 @@ def writearrayattr(filename, cyclenumber, name, type, value):
         node = "/" + namefromcycle(cyclenumber, ver)
 
     description = {'data': type}
-    table = sefile.createTable(node, name, description,
+    table = sefile.create_table(node, name, description,
                                filters=tables.Filters(complevel = 6))
 
     row = table.row
@@ -268,7 +268,7 @@ def namefromcycle(cyclenumber, version):
     SE 1.0 and 1.1 used dashes; SE 1.2 uses zero-padded integers with
     10-digit field width.
     """
-    if version == "1.2":
+    if version == b'1.2':
         return "cycle%010d" % cyclenumber
     else:
         return "cycle-" + str(cyclenumber)
